@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>template</title>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<style>
+			[v-cloak] {
+				display: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="app-1" style="background-color: aliceblue;">
+			<span v-once>{{msg}}</span>
+		</div>
+		<div id="app3" v-html="message"></div>
+		<div id="app4">
+			<button v-bind:id="'list-' + id">dd</button> {{ test }}
+			<p v-if="!seen">现在你看到我了</p>
+		</div>
+		<div id="example">
+			<p>Original message: "{{ message }}"</p>
+			<p>Computed reversed message: "{{ reversedMessage }}"</p>
+			<p>{{fullName}}</p>
+		</div>
+
+		<div id="question-div">
+			Ask a question? <input type="text" v-model="question"></br>
+			<span>{{ answer }}</span>
+			<div v-bind:class="[activeClass, errorClass]">135</div>
+			<div :class="{activeClass:activeClass, errorClass:errorClass}">135</div>
+		</div>
+	</body>
+	<script>
+		var test = 9;
+		var app1 = new Vue({
+			el: "#app-1",
+			data: {
+				msg: 'sss'
+			}
+		});
+		var app3 = new Vue({
+			el: "#app3",
+			data: {
+				message: "<h1>123</h1>"
+			}
+		});
+		var app4 = new Vue({
+			el: "#app4",
+			data: {
+				seen: true,
+				test: test,
+				id: "12"
+			}
+		});
+
+		var example = new Vue({
+			el: "#example",
+			data: {
+				firstName: 'Tony',
+				lastName: 'parker',
+				message: 'Hello'
+			},
+			computed: {
+				reversedMessage: function() {
+					return this.message.split('').reverse().join('')
+				},
+				fullName: {
+					// getter
+					get: function() {
+						return this.firstName + ' ' + this.lastName
+					},
+					// setter
+					set: function(newValue) {
+						var names = newValue.split(',')
+						this.firstName = names[0]
+						this.lastName = names[names.length - 1]
+					}
+				}
+			}
+		});
+
+		var question_div = new Vue({
+			el: '#question-div',
+			data: {
+				activeClass: 'active',
+				errorClass: 'text-danger',
+				question: '',
+				answer: ''
+			}
+			/*watch: {
+				question: function(oldVal, val) {
+					if(this.question.indexOf('?') === -1) {
+						this.answer = '问题一般以问号结尾. ;-)'
+						return
+					}
+					this.answer='thinking....'
+				}
+			}*/
+		});
+		question_div.$watch('question', function() {
+			if(this.question.indexOf('?') === -1) {
+				this.answer = '问题一般以问号结尾. ;-)'
+				return
+			}
+			this.answer = 'thinking....'
+		});
+		example.fullName = 'Kobe,Bryant';
+		console.log(example.reversedMessage);
+		example.message = "GoodBye";
+		console.log(example.reversedMessage);
+	</script>
+
+</html>

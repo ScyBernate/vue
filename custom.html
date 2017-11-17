@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>custom</title>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<style>
+			[v-cloak] {
+				display: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="app-1" style="background-color: aliceblue;">
+			<div class="form-group" style="width:50%;margin-top:20px">
+				<input type="text" class="form-control" placeholder="v-model.lazy通过一个blur事件触发" v-model.lazy="name" @keyup.enter="console.log('enter')" @keyup.esc="console.log('esc')">
+				<span class="label label-danger">{{name}}</span>
+				<input type="text" class="form-control" placeholder="将用户的输入值转为 Number 类型 (如果原值的转换结果为 NaN 则返回原值)" v-model.number="age" type="number"  @keyup.enter="console.log('enter')" @keyup.esc="console.log('esc')">
+				<span class="label label-danger">{{age}}</span>
+			</div>
+			
+			<my-checkbox v-model="foo"></my-checkbox> <span class="label label-danger">{{foo}}</span>
+			<button type="button" class="btn btn-default btn-lg btn-block" @click.self.prevent="add($event)">点击</button>
+		</div>
+
+		<div id='example-3'>
+			<input type="checkbox" id="checkbox" v-model="checked">
+			<label for="checkbox">{{ checked }}</label>
+
+			<input type="checkbox" id="jack" value="Jack" v-model="checkedNames">
+			<label for="jack">Jack</label>
+			<input type="checkbox" id="john" value="John" v-model="checkedNames">
+			<label for="john">John</label>
+			<input type="checkbox" id="mike" value="Mike" v-model="checkedNames">
+			<label for="mike">Mike</label>
+			<br>
+			<span>Checked names: {{ checkedNames }}</span>
+		</div>
+		<hr/>
+	</body>
+	<script>
+		//自定义v-model
+		Vue.component('my-checkbox', {
+			template: '<input type = "checkbox" @change = "$emit(\'balabala\', $event.target.checked)" :checked = "value" /> ',
+			props: ['value'],
+			model: {
+				prop: 'checked',
+				event: 'balabala'
+			}
+		})
+
+		var app1 = new Vue({
+			el: '#app-1',
+			data: {
+				foo: false,
+				name: '',
+				age: 0
+			},
+			methods: {
+				add: function(event) {
+					console.log('点击事件')
+				}
+			}
+		})
+
+		var app3 = new Vue({
+			el: '#example-3',
+			data: {
+				checkedNames: [],
+				checked: false,
+				age: 0
+			}
+		})
+	</script>
+
+</html>

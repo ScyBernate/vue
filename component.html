@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>component</title>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<style>
+			[v-cloak] {
+				display: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id='example' style="background-color: aliceblue;">
+			<div class="form-group" style="width:50%;margin-top:20px">
+				<input type="text" class="form-control" v-model="user.name">
+			</div>
+			<span class="label label-danger">{{user.age}}</span>
+			<my-component></my-component>
+			<my-component></my-component>
+			<my-component></my-component>
+			<!--
+            	作者：offline
+            	时间：2017-11-15
+            	描述：注意 :my-message,要用v-bind
+            -->
+			<my-component2 :my-message='user'></my-component2>
+
+			<check-component :my-message='user.age'></check-component>
+
+			<btton-component v-on:add='addTotal'></btton-component>
+			<span class="label label-danger">{{count}}</span>
+			<currency-input v-model="price"></currency-input>
+			<span class="label label-danger">{{price}}</span>
+		</div>
+	</body>
+	<script>
+		/**
+		 * 注意初始化顺序
+		 * 注册组件
+		 * 
+		 */
+		var data = {
+			counter: 0
+		};
+		var myComponent = Vue.component('my-component', {
+			template: '<button @click="counter += 1 ">{{ counter }}</button>',
+			data: function() {
+				return {
+					counter: 0
+				}
+			}
+		});
+		var myComponent2 = Vue.component('my-component2', {
+			template: '<h1>{{addAge}}</h1>',
+			props: ['myMessage'],
+			data: function() {
+				return {
+					count: this.myMessage.age
+				}
+			},
+			computed: {
+				addAge: function() {
+					this.myMessage.age = 24;
+					return this.myMessage.age
+				}
+			}
+		});
+
+		var checkComponent = Vue.component('check-component', {
+			template: '<input type="text" class="form-control" v-model="myMessage"/>',
+			props: {
+				myMessage: {
+					type: Number,
+					required: true,
+					default: 100,
+					validator: function(value) {
+						return value > 10
+					}
+				}
+			}
+		});
+
+		var buttonComponent = Vue.component('btton-component', {
+			template: ' <button type="button" class="btn btn-default btn-lg btn-block" @click="add">{{num}}</button>',
+			data: function() {
+				return {
+					num: 0
+				}
+			},
+			methods: {
+				add: function() {
+					this.num += 1
+					this.$emit('add')
+				}
+			}
+		});
+
+		Vue.component('currency-input', {
+			template: '\
+    <span>\
+      $\
+      <input\
+        ref="input"\
+        v-bind:value="value"\
+        v-on:input="updateValue($event.target.value)"\
+      >\
+    </span>\
+  ',
+			props: ['value'],
+			methods: {
+				// 不是直接更新值，而是使用此方法来对输入值进行格式化和位数限制
+				updateValue: function(value) {
+					var formattedValue = value
+						// 删除两侧的空格符
+						.trim()
+						// 保留 2 位小数
+						.slice(
+							0,
+							value.indexOf('.') === -1 ?
+							value.length :
+							value.indexOf('.') + 3
+						)
+					// 如果值尚不合规，则手动覆盖为合规的值
+					if(formattedValue !== value) {
+						this.$refs.input.value = formattedValue
+					}
+					// 通过 input 事件带出数值
+					this.$emit('input', Number(formattedValue))
+				}
+			}
+		})
+
+		var example = new Vue({
+			el: '#example',
+			data: {
+				message: 'hello',
+				age: 12,
+				count: 0,
+				price: 0,
+				user: {
+					name: 'scy',
+					age: 12
+				}
+			}
+			/*components: {
+				'my-component': {
+					template: '<h1>hello</h1>'
+				}
+			}*/
+			,
+			methods: {
+				oninput: function(val) {
+					this.$set(this.user, 'age', val)
+				},
+				addTotal: function() {
+					this.count += 1;
+					console.log(this.count);
+				}
+			}
+		});
+	</script>
+
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>router</title>
+		<script src="https://unpkg.com/vue@2.5.3/dist/vue.js"></script>
+		<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+		<link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<style>
+			[v-cloak] {
+				display: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id='app-1'>
+			<router-view></router-view>
+			<a class="list-group-item" v-link="{path: '/home'}">Home</a>
+			<a class="list-group-item" v-link="{path: '/about'}">About</a>
+		</div>
+	</body>
+	<script>
+		//可扩展组件Home
+		var Home = Vue.extend({
+			template: '<div><h1>Home</h1><p>{{msg}}</p><div>',
+			data: function() {
+				return {
+					msg: 'Hello, vue router!'
+				}
+			}
+		})
+
+		//可扩展组件About
+		var About = Vue.extend({
+			template: '<div><h1>About</h1><p>This is the tutorial about vue-router.</p></div>'
+		})
+
+		const routes = [{
+				path: '/home',
+				component: Home
+			},
+			{
+				path: '/about',
+				component: About
+			}
+		]
+		//创建路由
+		var router = new VueRouter(routes)
+		//创建根组件，挂载到元素中
+		const app = new Vue({
+			router
+		}).$mount('#app-1')
+	</script>
+
+</html>

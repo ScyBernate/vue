@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title>hello world</title>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<style>
+			[v-cloak] {
+				display: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="app" style="background-color:pink;">
+			<div>{{message}}</div>
+			<input type="text" v-model="message" class="form-control">
+		</div>
+		<div id="app2" style="background-color:bisque;">
+			<table class="table">
+				<tr v-for="book in books " v-cloak>
+					<td>{{book.id}}</td>
+					<td>{{book.name}}</td>
+					<td>{{book.author}}</td>
+					<td>{{book.price}}</td>
+				</tr>
+			</table>
+			<button v-on:click="onClick" class="btn btn-danger">获取所有书的价格</button>
+			<button @click="onClick2" class="btn btn-danger">获取所有书的名字</button>
+			<span>{{ show_message }}</span>
+			<div id="add-book">
+				<legend>添加书籍</legend>
+				<div class="form-group">
+					<label for="">书名</label>
+					<input type="text" class="form-control" v-model="book.name">
+				</div>
+				<div class="form-group">
+					<label for="">作者</label>
+					<input type="text" class="form-control" v-model="book.author">
+				</div>
+				<div class="form-group">
+					<label for="">价格</label>
+					<input type="text" class="form-control" v-model="book.price">
+				</div>
+				<button class="btn btn-primary btn-block" v-on:click="addBook()">添加</button>
+			</div>
+		</div>
+
+		<div id="app4" style="background-color: hotpink;height:80px">
+			<span class="label label-success" v-once>{{ msg }}</span>
+			<button class="btn btn-primary btn-block" style="width:80px;background-color:red;float:left" v-on:click="change()">变化</button>
+		</div>
+
+		<div id="app-3">
+			<span v-bind:title="message">
+   				 鼠标悬停几秒钟查看此处动态绑定的提示信息！
+  			</span>
+		</div>
+
+	</body>
+	<script>
+		var v1 = new Vue({
+			el: '#app',
+			data: {
+				message: 'hello1-vuejs.'
+			}
+		});
+
+		var v2 = new Vue({
+			el: '#app2',
+			data: {
+				show_message: '',
+				total: 0,
+				book: {
+					id: 0,
+					author: '',
+					name: '',
+					price: ''
+				},
+				books: [{
+					id: 1,
+					author: '曹雪芹',
+					name: '红楼梦',
+					price: 32.0
+				}, {
+					id: 2,
+					author: '施耐庵',
+					name: '水浒传',
+					price: 30.0
+				}, {
+					id: '3',
+					author: '罗贯中',
+					name: '三国演义',
+					price: 24.0
+				}, {
+					id: 4,
+					author: '吴承恩',
+					name: '西游记',
+					price: 20.0
+				}]
+			},
+			methods: {
+				onClick: function() {
+					console.log()
+					if(this.total != 0) {
+
+					} else {
+						for(var i = 0; i < this.books.length; i++) {
+							this.total += Number(this.books[i].price);
+						}
+					}
+					this.show_message = this.total;
+				},
+				onClick2: function() {
+					for(var i = 0; i < this.books.length; i++) {
+						this.show_message += this.books[i].name + ",";
+					}
+				},
+				addBook: function() {
+					//计算书的id
+					this.book.id = this.books.length + 1;
+					this.books.push(this.book);
+					//将input中的数据重置
+					this.book = '';
+					this.show_message = this.total;
+				}
+			},
+			watch: {
+				show_message: function(val, oldval) {
+					this.total += val;
+				}
+			}
+		});
+
+		var app3 = new Vue({
+			el: '#app-3',
+			data: {
+				message: '页面加载于 ' + new Date().toLocaleString()
+			}
+		})
+
+		var v4 = new Vue({
+			el: "#app4",
+			data: {
+				msg: 'success'
+			},
+			computed: {
+				example: {
+					cache: false,
+					get: function() {
+						return Date.now() + this.msg
+					}
+				}
+			},
+			methods: {
+				change: function() {
+					this.msg = this.example;
+				}
+			}
+		});
+	</script>
+
+</html>
